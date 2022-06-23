@@ -1,0 +1,76 @@
+info:
+  app:
+    name: ${spring.application.name}
+server:
+  port: 8082
+  servlet:
+    context-path: /
+spring:
+  devtools:
+    add-properties: false
+  application:
+    name: track-github-activities
+  sleuth:
+    propagation:
+      tag:
+        enabled: true
+    trace-id128: true
+    log:
+      slf4j:
+        enabled: true
+  codec:
+    max-in-memory-size: 10MB
+logging:
+  level:
+    org:
+      springframework: info
+
+management:
+  server:
+    port: 9321
+    servlet:
+      context-path: /
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: ["info", "health", "prometheus"]
+  endpoint:
+    health:
+      enabled: true
+    prometheus:
+      enabled: true
+    info:
+      enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+  metrics:
+    tags:
+      environment: "local"
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+  api-docs:
+    path: /api-docs
+    enabled: true
+  packages-to-scan: com.tui.track.github.activities.controller
+application:
+  endpoints:
+    github-url: ${GITHUB_URL:http://localhost:8083/github/}
+  github-access-token: ${GITHUB_ACCESS_TOKEN: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}
+  github-organization: ${GITHUB_ORGANIZATION:IGSLtd}
+async:
+  threadpool:
+    core-pool-size: 32
+    queue-capacity: 40
+    max-pool-size: 64
+

@@ -1,0 +1,33 @@
+version: "2.4"
+
+networks:
+  track-github-activities-api-network:
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: service.Dockerfile
+    container_name: track-github-activities
+    ports:
+      - "8082:8082"
+    depends_on:
+      wiremock:
+        condition: service_healthy
+    networks:
+      - track-github-activities-api-network
+
+  wiremock:
+    build:
+      context: .
+      dockerfile: wiremock.Dockerfile
+    container_name: wiremock
+    ports:
+      - "8445:8445"
+#    healthcheck:
+#      test: ["CMD", "wget", "-SqO", "/dev/null", "http://wiremock:8445/health"]
+#      interval: 10s
+#      retries: 10
+#      timeout: 5s
+    networks:
+      - track-github-activities-api-network

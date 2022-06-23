@@ -1,0 +1,13 @@
+logging:
+  level:
+    org:
+      springframework: info
+management:
+  server:
+    port: 9322
+  metrics:
+    tags:
+      environment: "local"
+application:
+  endpoints:
+    github-url: ${GITHUB_URL:http://localhost:8083/github/}

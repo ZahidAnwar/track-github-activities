@@ -1,0 +1,55 @@
+<configuration>
+    <!-- Kibana uses console appender to get the logs -->
+    <!--profile 'default' is used for unit testing mostly, so logs printing in the normal way which is easy for human to understand-->
+    <springProfile name="default-1">
+        <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>[%X{spring.application.name:-},%X{X-Span-Export:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{correlation-id:-}] %d{"yyyy/MM/dd HH:mm:ss,SSS"} [%thread] [%-5level] [%L][%logger{10}] - %replace(%replace(%replace(%replace(%replace(%replace(%replace(%replace(%msg){".earer .{853}","Bearer ********"}){'[0-9a-f]{64}', ***************}){'[a-zA-Z]{2}[0-9]{6}[a-zA-Z]{1}|[a-zA-Z]{2}[0-9]{6}', *********}){surname[:]*(.*),surname: *****}){forename[:]*(.*),forename: *****}){secondForename[:]*(.*),secondForename: *****}){initials[:]*(.*),initials: *****}){dateOfBirth[:]*(.*),dateOfBirth: *****} %n</pattern>
+            </layout>
+        </appender>
+        <!-- copy any of the appender below to get json format for default as well-->
+        <root level="INFO">
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+    <springProfile name="default,dev,sandbox,staging,production,docker-integration-tests">
+        <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <contextName>
+                        <fieldName>track-github-activities</fieldName>
+                    </contextName>
+                    <timestamp>
+                        <fieldName>ts</fieldName>
+                        <timeZone>UTC</timeZone>
+                    </timestamp>
+                    <loggerName>
+                        <fieldName>track-github-activities</fieldName>
+                    </loggerName>
+                    <logLevel>
+                        <fieldName>level</fieldName>
+                    </logLevel>
+                    <callerData>
+                        <classFieldName>class</classFieldName>
+                        <methodFieldName>method</methodFieldName>
+                        <lineFieldName>line</lineFieldName>
+                        <fileFieldName>file</fileFieldName>
+                    </callerData>
+                    <threadName>
+                        <fieldName>thread</fieldName>
+                    </threadName>
+                    <mdc/>
+                    <arguments>
+                        <includeNonStructuredArguments>false</includeNonStructuredArguments>
+                    </arguments>
+                    <stackTrace>
+                        <fieldName>stack</fieldName>
+                    </stackTrace>
+                </providers>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+</configuration>

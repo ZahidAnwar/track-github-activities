@@ -1,0 +1,14 @@
+{
+  "repositories": [
+    {
+      "repositoryName": "Android-app-test",
+      "ownerName": "ZahidAnwar",
+      "branches": [
+        {
+          "branchName": "master",
+          "commitSha": "3a51ad70f437173cec6501b271ef2db72a2f253c"
+        }
+      ]
+    }
+  ]
+}

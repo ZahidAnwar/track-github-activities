@@ -1,0 +1,134 @@
+openapi: 3.0.1
+# Version History:
+# Date        Version   Description
+# 25/06/2022  0.0.1     First version
+# Created by Zahid Anwar for tui.com
+
+info:
+  title: Tui Track Github API
+  description: |-
+    This endpoint is part of the tui.com, which is an API to allow tui employee to track other user/employees github activities.
+    Header fields is required as below -
+
+    | Attribute (M/O) | Description |
+    | ---------| ---------- |
+    | `Accept (M)` | Application document accept type application/json. |
+  contact:
+    name: Tui Mobile Development Team
+    url: http://tui.com/digital/team/apis/track-github-api
+    email: team.lead@tui.com
+  version: '0.0.1'
+servers:
+- url: https://localhost/track
+security:
+- Oauth2: []
+paths:
+  /v1/track/user/repositories:
+    get:
+      tags:
+      - TUI_Employee_Track_Users_Github_Activities
+      description: GET /v1/track/user/repositories  - find employee/user github repositories and other details.
+      operationId: getGithubRepository
+      parameters:
+      - name: userName
+        in: query
+        description: A valid github user name.
+        required: true
+        schema:
+          type: string
+      - name: Accept
+        in: header
+        description: Enforce user to setup mandatory header.
+        required: true
+        schema:
+          type: string
+          example: application/json
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackGithubActivitiesResponse'
+        404:
+          description: Supplied user name not exists on github.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorDetails'
+        406:
+          description: Incorrect Header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorDetails'
+        500:
+          description: Internal server error / failure.  Please retry your request later.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JSONAPIErrorDetails'
+
+components:
+  schemas:
+    JSONAPIErrorDetails:
+      description: Error details object complying to the JSON-API specification - see https://jsonapi.org/format/#error-objects
+      type: object
+      properties:
+        status:
+          type: integer
+          format: integer
+          readOnly: true
+        message:
+          type: string
+          format: string
+          readOnly: true
+    TrackGithubActivitiesResponse:
+      description: JSON-API schema wrapper for the github response.
+      type: object
+      properties:
+        repositories:
+          description: Github all repositories for the user.
+          type: array
+          items:
+            $ref: '#/components/schemas/RepositoryDetails'
+    RepositoryDetails:
+      description: Github Repository details for a repo.
+      type: object
+      properties:
+        repositoryName:
+          description: Name of the repository.
+          type: string
+          format: string
+          readOnly: true
+        ownerName:
+          description: Owner of the repository.
+          type: string
+          format: string
+          readOnly: true
+        branches:
+          description: Github branch details.
+          type: array
+          items:
+            $ref: '#/components/schemas/BranchDetails'
+    BranchDetails:
+      description: JSON-API schema branch details for a repo.
+      type: object
+      properties:
+        branchName:
+          description: Branch name for the repository.
+          type: string
+          format: string
+          readOnly: true
+        commitSha:
+          description: Commit sha for that branch.
+          type: string
+          format: string
+          readOnly: true
+  securitySchemes:
+    Oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://gateway.tui.com:8443/track/oauth2
+          scopes: {}
