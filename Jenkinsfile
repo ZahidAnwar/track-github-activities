@@ -4,10 +4,10 @@ pipeline {
         pollSCM '* * * * *'
     }
     stages {
-        stage('Build') {
-            steps {
-                sh 'mvn clean install'
-            }
+    stage('build'){
+        withMaven(maven: 'mvn') {
+            sh "mvn clean package"
         }
+    }
     }
 }
