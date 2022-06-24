@@ -1,17 +1,15 @@
 pipeline {
     agent any
+    tools {
+            maven 'maven-3.6.1'
+    }
     triggers {
         pollSCM '* * * * *'
     }
     stages {
         stage('Build') {
             steps {
-                sh './gradlew assemble'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh './gradlew test'
+                sh 'mvn clean install'
             }
         }
     }
