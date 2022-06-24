@@ -66,7 +66,7 @@ springdoc:
 application:
   endpoints:
     github-url: ${GITHUB_URL:http://localhost:8083/github/}
-  github-access-token: ${GITHUB_ACCESS_TOKEN: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}
+  github-access-token: ${GITHUB_ACCESS_TOKEN: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}
   github-organization: ${GITHUB_ORGANIZATION:IGSLtd}
 async:
   threadpool:
